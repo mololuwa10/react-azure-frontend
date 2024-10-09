@@ -1,0 +1,33 @@
+name: Deploy React App to Azure Web App
+
+on:
+  push:
+    branches:
+      - main  # Change this to your default branch if it's different
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Node.js Setup
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'  # Change this based on your React version
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: MyReactFrontendApp  # Your frontend app name
+          slot-name: production
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}  # Add publish profile to secrets
+          package: ./build
